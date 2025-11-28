@@ -1,41 +1,46 @@
-//your JS code here. If required.
-// List of your sound files (place them in /sounds/ folder)
-const sounds = ["sound1.mp3", "sound2.mp3", "sound3.mp3"];
+const sounds = ["applause", "boo", "gasp", "tada", "victory", "wrong"];
 
-const buttonsContainer = document.getElementById("buttons");
+const buttonsDiv = document.getElementById("buttons");
+
 let currentAudio = null;
 
-// Create a button for each sound
-sounds.forEach(sound => {
+// Create sound buttons
+sounds.forEach((name) => {
     const btn = document.createElement("button");
     btn.classList.add("btn");
-    btn.innerText = sound;
+    btn.innerText = name;
 
     btn.addEventListener("click", () => {
-        playSound(sound);
+        playSound(name);
     });
 
-    buttonsContainer.appendChild(btn);
+    buttonsDiv.appendChild(btn);
 });
 
-// Play selected sound
-function playSound(soundName) {
-    // Stop any previous audio
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
+// Add stop button
+const stopBtn = document.createElement("button");
+stopBtn.classList.add("stop");
+stopBtn.innerText = "stop";
 
-    // Load new audio
-    currentAudio = new Audio(`sounds/${soundName}`);
-    currentAudio.play();
+stopBtn.addEventListener("click", stopSound);
+
+buttonsDiv.appendChild(stopBtn);
+
+
+// Functions
+function playSound(name) {
+    stopSound();
+
+    currentAudio = new Audio(`sounds/${name}.mp3`);
+
+    currentAudio.play().catch(() => {
+        console.log("Audio failed to play (Cypress might block autoplay)");
+    });
 }
 
-// Stop button
-document.getElementById("stopBtn").addEventListener("click", () => {
+function stopSound() {
     if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
     }
-});
-
+}
