@@ -1,46 +1,43 @@
 const sounds = ["applause", "boo", "gasp", "tada", "victory", "wrong"];
 
-const buttonsDiv = document.getElementById("buttons");
-
+const container = document.getElementById("buttons");
 let currentAudio = null;
 
-// Create sound buttons
-sounds.forEach((name) => {
+// Create buttons + audio elements in DOM
+sounds.forEach(name => {
+    // Create audio element in DOM
+    const audio = document.createElement("audio");
+    audio.id = name;
+    audio.src = `sounds/${name}.mp3`;
+    document.body.appendChild(audio);
+
+    // Create button
     const btn = document.createElement("button");
-    btn.classList.add("btn");
+    btn.className = "btn";
     btn.innerText = name;
 
     btn.addEventListener("click", () => {
-        playSound(name);
+        stopAll();
+        currentAudio = document.getElementById(name);
+        currentAudio.play();
     });
 
-    buttonsDiv.appendChild(btn);
+    container.appendChild(btn);
 });
 
-// Add stop button
+// Stop button
 const stopBtn = document.createElement("button");
-stopBtn.classList.add("stop");
+stopBtn.className = "stop";
 stopBtn.innerText = "stop";
+stopBtn.addEventListener("click", stopAll);
 
-stopBtn.addEventListener("click", stopSound);
+container.appendChild(stopBtn);
 
-buttonsDiv.appendChild(stopBtn);
-
-
-// Functions
-function playSound(name) {
-    stopSound();
-
-    currentAudio = new Audio(`sounds/${name}.mp3`);
-
-    currentAudio.play().catch(() => {
-        console.log("Audio failed to play (Cypress might block autoplay)");
+// Stop all audio
+function stopAll() {
+    sounds.forEach(name => {
+        const a = document.getElementById(name);
+        a.pause();
+        a.currentTime = 0;
     });
-}
-
-function stopSound() {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
 }
